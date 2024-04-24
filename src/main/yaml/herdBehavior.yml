@@ -1,0 +1,109 @@
+incarnation: protelis
+
+variables:
+  seed: &seed
+    min: 0
+    max: 1
+    step: 1
+    default: 0
+  bodyLength:
+    formula: 2
+  bodyWidth:
+    formula: bodyLength / 2
+  NumberOfAnimals: &NumberOfAnimals
+    formula: 140
+  stressZoneRadius:
+    formula: 1.5 * bodyLength
+  neutralZoneRadius:
+    formula: 10 * bodyLength
+  attractionZoneRadius:
+    formula: 20 * bodyLength
+  rearZoneRadius:
+    formula: attractionZoneRadius
+  EnvironmentSize:
+    formula: 2000 # meters
+  EnvironmentRadius: &EnvironmentRadius
+    formula: EnvironmentSize / 2
+  NumberOfHerds: &HerdNumber
+    type: ArbitraryVariable
+    parameters: [ 8, [2, 4, 8] ]
+  intrinsicForwardVelocity:
+    formula: 1.0 * bodyLength
+  intrinsicLateralVelocity:
+    formula: 0.5 * bodyLength
+  leadersSlowDown:
+    formula: 0.7 # [0; 1] if there are neighbors in rear zone slow down by this value
+  leadersSlowDownProbability:
+    formula: 0.8
+  trailersSpeedUp:
+    formula: 2.0
+  trailersSpeedUpProbability:
+    formula: 0.4
+  hearingLevel: &hearingThreshold
+    formula: 20.0
+  zonesRadii: &zonesRadii
+    formula: listOf(stressZoneRadius, neutralZoneRadius, attractionZoneRadius, rearZoneRadius)
+    language: kotlin
+  velocities: &velocities
+    formula: listOf(intrinsicLateralVelocity, intrinsicForwardVelocity)
+    language: kotlin
+  movementProbabilities: &movementProbabilities
+    formula: listOf(0.25, 0.5, 0.25) # Probability to go [left, forward, right]
+    language: kotlin
+  stressZoneRepulsionFactor: &stressRepulsionFactor
+    formula: 0.5 # [0; 1] Slow down by this factor if there are neighbors ahead of the individual in the stress zone.
+  attractionSpeedUp: &attractionSpeedUpFactor
+    formula: 1.5 # [1; inf] if there are nodes in attraction zone multiply the speed-up factor to current velocity
+  leaderSeedChange: &leaderSeedChange
+    formula: listOf(leadersSlowDown, leadersSlowDownProbability)
+    language: kotlin
+  trailerSeedChange: &trailerSeedChange
+    formula: listOf(trailersSpeedUp, trailersSpeedUpProbability)
+    language: kotlin
+
+seeds:
+  scenario: *seed
+  simulation: *seed
+
+launcher:
+  parameters:
+    batch: [seed, spacing, error]
+
+network-model:
+  type: ConnectWithinDistance
+  parameters: [0.5]
+
+_herdParameters: &herdParameters
+  - *zonesRadii
+  - *velocities
+  - *movementProbabilities
+  - *stressRepulsionFactor
+  - *attractionSpeedUpFactor
+  - *leaderSeedChange
+  - *trailerSeedChange
+  - *HerdNumber
+  - *EnvironmentRadius
+  - *seed
+
+_herd: &herd
+  - time-distribution: 1
+    type: Event
+    actions:
+      type: HerdBehavior
+      parameters: *herdParameters
+
+environment:
+  type: MovementTrackerPhysics2DEnvironment
+  parameters: ["drone"]
+
+deployments:
+  - type: GroupsDeployment
+    parameters: [*NumberOfAnimals, 0, 0, *EnvironmentRadius, *HerdNumber, 25]
+    contents:
+      - molecule: zebra
+        concentration: true
+    programs: *herd
+
+terminate:
+  - type: AfterTime
+    parameters: [ 1800 ]
