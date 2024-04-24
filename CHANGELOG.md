@@ -1,3 +1,10 @@
+## 1.0.0 (2024-04-24)
+
+
+### Features
+
+* setup simulation repository ([a17612a](https://github.com/nicolasfara/experiments-2024-dsrt-herd-behavior/commit/a17612a27f8fe19d0190332c8bcb734b11eb8794))
+
 ## [1.2.1](https://github.com/DanySK/alchemist-experiments-bootstrap/compare/1.2.0...1.2.1) (2024-02-09)
 
 
