@@ -6,9 +6,9 @@ variables:
     max: 1
     step: 1
     default: 0
-  bodyLength:
+  bodyLength: &bodyLen
     formula: 2
-  bodyWidth:
+  bodyWidth: &bodyWidth
     formula: bodyLength / 2
   NumberOfAnimals: &NumberOfAnimals
     formula: 140
@@ -54,10 +54,10 @@ variables:
     formula: 0.5 # [0; 1] Slow down by this factor if there are neighbors ahead of the individual in the stress zone.
   attractionSpeedUp: &attractionSpeedUpFactor
     formula: 1.5 # [1; inf] if there are nodes in attraction zone multiply the speed-up factor to current velocity
-  leaderSeedChange: &leaderSeedChange
+  leaderSpeedChange: &leaderSpeedChange
     formula: listOf(leadersSlowDown, leadersSlowDownProbability)
     language: kotlin
-  trailerSeedChange: &trailerSeedChange
+  trailerSpeedChange: &trailerSpeedChange
     formula: listOf(trailersSpeedUp, trailersSpeedUpProbability)
     language: kotlin
 
@@ -79,8 +79,8 @@ _herdParameters: &herdParameters
   - *movementProbabilities
   - *stressRepulsionFactor
   - *attractionSpeedUpFactor
-  - *leaderSeedChange
-  - *trailerSeedChange
+  - *leaderSpeedChange
+  - *trailerSpeedChange
   - *HerdNumber
   - *EnvironmentRadius
   - *seed
@@ -91,6 +91,9 @@ _herd: &herd
     actions:
       type: HerdBehavior
       parameters: *herdParameters
+_animal_area: &animalArea
+  - type: RectangularArea
+    parameters: [ *bodyLen, *bodyWidth ]
 
 environment:
   type: MovementTrackerPhysics2DEnvironment
@@ -103,6 +106,7 @@ deployments:
       - molecule: zebra
         concentration: true
     programs: *herd
+    properties: *animalArea
 
 terminate:
   - type: AfterTime
