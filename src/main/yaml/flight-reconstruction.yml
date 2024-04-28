@@ -1,0 +1,70 @@
+incarnation: protelis
+environment:
+  type: OSMEnvironment
+
+variables:
+  flight_number: &n
+    # The most interesting flights [11, 12, 14]
+    formula: 11 #[1, 2, 4 ,5, 8, 11, 12, 13, 14]
+    # The longest flights [12, 14, 5]
+  flights_folder:
+    language: kotlin
+    formula: |
+      "flights"
+  path_zebras: &path_zebras
+    language: kotlin
+    formula: |
+      "${flights_folder}/flight_${flight_number}_zebras"
+  path_drones: &path_drones
+    language: kotlin
+    formula: |
+      "${flights_folder}/flight_${flight_number}_drones"
+  path_fov: &path_fov
+    language: kotlin
+    formula: |
+      "${flights_folder}/flight_${flight_number}_fov"
+
+_pools:
+  - pool: &move_drone
+      - time-distribution: 1
+        type: Event
+        actions:
+          - type: ReproduceGPSTrace
+            parameters: [*path_drones, false, "AlignToFirstTrace"]
+  - pool: &move_fov
+      - time-distribution: 1
+        type: Event
+        actions:
+          - type: ReproduceGPSTrace
+            parameters: [ *path_fov, false, "AlignToFirstTrace" ]
+  - pool_zb: &move_zebras
+      - time-distribution: 1
+        type: Event
+        actions:
+          - type: ReproduceGPSTrace
+            parameters: [ *path_zebras, false, "AlignToFirstTrace" ]
+          - type: TraceNodeStatus
+            parameters: [ *path_zebras, false, "AlignToFirstTrace" ]
+
+deployments:
+  - type: FromGPSTracesDynamic # Drone, can be removed
+    parameters: [*path_drones, false, "AlignToFirstTrace"]
+    contents:
+      - molecule: drone
+        concentration: true
+    programs:
+      - *move_drone
+  - type: FromGPSTracesDynamic # FoV of the drone, can be removed
+    parameters: [ *path_fov, false, "AlignToFirstTrace" ]
+    contents:
+      - molecule: fov
+        concentration: true
+    programs:
+      - *move_fov
+  - type: FromGPSTracesDynamic
+    parameters: [*path_zebras, false, "AlignToFirstTrace"]
+    contents:
+      - molecule: zebra
+        concentration: true
+    programs:
+      - *move_zebras
