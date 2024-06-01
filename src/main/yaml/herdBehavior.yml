@@ -111,3 +111,15 @@ deployments:
 terminate:
   - type: AfterTime
     parameters: [ 1800 ]
+
+
+export:
+  - type: CustomCSVExporter
+    parameters:
+      fileNameRoot: "velocity_simulation"
+      interval: 10.0
+      exportPath: "build/export"
+    data:
+      - time
+      - type: VelocityExtractorEuclidean
+        parameters: [10]

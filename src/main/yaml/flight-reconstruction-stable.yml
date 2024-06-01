@@ -66,3 +66,18 @@ deployments:
         concentration: true
     programs:
       - *move_zebras
+
+terminate:
+  - type: StableForSteps
+    parameters: [20, 5]
+
+export:
+  - type: CustomCSVExporter
+    parameters:
+      fileNameRoot: "velocity_reconstruction"
+      interval: 300.0 # equivalent to 10 seconds
+      exportPath: "build/exportt"
+    data:
+      - time
+      - type: VelocityExtractorOSME
+        parameters: [10]

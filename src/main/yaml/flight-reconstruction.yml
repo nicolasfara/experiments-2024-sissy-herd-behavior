@@ -68,3 +68,7 @@ deployments:
         concentration: true
     programs:
       - *move_zebras
+
+terminate:
+  - type: StableForSteps
+    parameters: [20, 5]
