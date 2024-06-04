@@ -1,3 +1,16 @@
+## [1.1.0](https://github.com/nicolasfara/experiments-2024-dsrt-herd-behavior/compare/1.0.0...1.1.0) (2024-06-04)
+
+
+### Features
+
+* add herd behavior ([0675b65](https://github.com/nicolasfara/experiments-2024-dsrt-herd-behavior/commit/0675b6527970a373c4d1adaf004a795a396a4db6))
+
+
+### General maintenance
+
+* change renovate base config ([1ff6a2e](https://github.com/nicolasfara/experiments-2024-dsrt-herd-behavior/commit/1ff6a2e6dc165d1f61e8bf080e9a9a1b3c2c0ad1))
+* **release:** update gradle.properties .env versions to 1.0.0 [skip ci] ([eb08c08](https://github.com/nicolasfara/experiments-2024-dsrt-herd-behavior/commit/eb08c0803927d3b41756277202560ce547f26af8))
+
 ## 1.0.0 (2024-04-24)
 
 
