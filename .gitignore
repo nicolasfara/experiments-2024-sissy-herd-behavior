@@ -2,6 +2,7 @@
 .gradle
 .idea/
 .spyproject/
+env/
 build/
 charts/
 data_summary_*
