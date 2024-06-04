@@ -28,7 +28,7 @@ class VelocityExtractorEuclidean(private val stepInSeconds: Int) : AbstractVeloc
         require(environment is ContinuousPhysics2DEnvironment)
         val m = prev.associate { it.id to it.position }
         val currentIndividuals = environment.nodes.filter {
-            it.contains(SimpleMolecule("onn"))
+            it.contains(SimpleMolecule("zebra"))
         }.map { NodeSnapshotEuclidean(it.id, environment.getPosition(it)) }
         currentIndividuals.forEach {
             if (m.containsKey(it.id)) {

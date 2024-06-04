@@ -3,7 +3,7 @@ incarnation: protelis
 variables:
   seed: &seed
     min: 0
-    max: 1
+    max: 10
     step: 1
     default: 0
   bodyLength: &bodyLen
@@ -26,11 +26,19 @@ variables:
     formula: EnvironmentSize / 2
   NumberOfHerds: &HerdNumber
     type: ArbitraryVariable
-    parameters: [ 8, [2, 4, 8] ]
+    parameters: [ 1, [1, 2] ]
+  intrinsicForwardCoefficient:
+    type: GeometricVariable
+    parameters: [ 1.0, 0.1, 1.0, 5 ]
+  intrinsicLateralMultiplier:
+    type: ArbitraryVariable
+    parameters: [ 0.5, [0.25, 0.5, 0.75] ]
+  intrinsicLateralCoefficient:
+    formula: intrinsicForwardCoefficient * intrinsicLateralMultiplier
   intrinsicForwardVelocity:
-    formula: 1.0 * bodyLength
+    formula: intrinsicForwardCoefficient * bodyLength
   intrinsicLateralVelocity:
-    formula: 0.5 * bodyLength
+    formula: intrinsicLateralCoefficient * bodyLength
   leadersSlowDown:
     formula: 0.7 # [0; 1] if there are neighbors in rear zone slow down by this value
   leadersSlowDownProbability:
@@ -39,8 +47,6 @@ variables:
     formula: 2.0
   trailersSpeedUpProbability:
     formula: 0.4
-  hearingLevel: &hearingThreshold
-    formula: 20.0
   zonesRadii: &zonesRadii
     formula: listOf(stressZoneRadius, neutralZoneRadius, attractionZoneRadius, rearZoneRadius)
     language: kotlin
@@ -67,7 +73,7 @@ seeds:
 
 launcher:
   parameters:
-    batch: [seed, spacing, error]
+    batch: [seed, intrinsicForwardCoefficient, intrinsicLateralMultiplier]
 
 network-model:
   type: ConnectWithinDistance
@@ -112,13 +118,12 @@ terminate:
   - type: AfterTime
     parameters: [ 1800 ]
 
-
 export:
   - type: CustomCSVExporter
     parameters:
       fileNameRoot: "velocity_simulation"
       interval: 10.0
-      exportPath: "build/export"
+      exportPath: "data"
     data:
       - time
       - type: VelocityExtractorEuclidean
