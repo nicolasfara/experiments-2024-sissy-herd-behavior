@@ -207,7 +207,7 @@ if __name__ == '__main__':
     timeColumnName = 'time'
     logarithmicTime = False
     # One or more variables are considered random and "flattened"
-    seedVars = ['seed']
+    seedVars = [] # ['seed']
 
 
     # Label mapping
@@ -482,12 +482,13 @@ if __name__ == '__main__':
 
     so.Plot.config.theme.update(axes_style("whitegrid"))
 
-    dataset = means['velocity_simulation'].sum(dim='time').to_dataframe()
+    dataset = means['velocity_simulation'].sum(dim='time')
+    dataset["intrinsicForwardCoefficient"] = dataset['intrinsicForwardCoefficient'].astype(str)
+    dataset = dataset.to_dataframe()
     dataset = dataset.reset_index().drop(columns=['NumberOfHerds'])
-    print(dataset)
-    dataset_1 = dataset.melt(id_vars=['intrinsicForwardCoefficient', 'intrinsicLateralMultiplier'],
+    dataset_1 = dataset.melt(id_vars=['intrinsicForwardCoefficient', 'intrinsicLateralMultiplier', 'seed'],
                              var_name='velocity_range', value_name='count')
-    dataset_2 = dataset.melt(id_vars=['intrinsicForwardCoefficient', 'intrinsicLateralMultiplier'],
+    dataset_2 = dataset.melt(id_vars=['intrinsicForwardCoefficient', 'intrinsicLateralMultiplier', 'seed'],
                              var_name='multiplier',
                              value_name='multiplier_value')
     dataset_1 = dataset_1.set_index(['intrinsicForwardCoefficient', 'intrinsicLateralMultiplier', dataset_1.groupby(
@@ -499,10 +500,11 @@ if __name__ == '__main__':
                  .reset_index(level=2, drop=True)
                  .reset_index()
                  )
-
+    print(dataset_3)
     velocity_plot = (
         so.Plot(dataset_3, color="intrinsicForwardCoefficient", x='velocity_range', y='count')
-        .add(so.Line(marker="o"), so.Dodge())
+        .add(so.Line(marker="o", edgecolor="w"), so.Agg())
+        .add(so.Band())
         .facet("intrinsicLateralMultiplier")
         .layout(size=(20, 4), engine="constrained")
         .scale(color="viridis")
