@@ -15,7 +15,7 @@ data class NodeSnapshot(
 /**
  * @param stepInSeconds the step in seconds between two extraction.
  */
-class VelocityExtractorOSME(private val stepInSeconds: Int) : AbstractVelocityExtractor() {
+class VelocityExtractorOSME(private val stepInSeconds: Int) : AbstractRangeExtractor(maxValue = 15.0) {
     var previousSnapshot: List<NodeSnapshot> = emptyList()
 
     override fun <T> extractData(
@@ -34,7 +34,7 @@ class VelocityExtractorOSME(private val stepInSeconds: Int) : AbstractVelocityEx
             if (m.containsKey(it.id)) {
                 val distance: Double = it.position.distanceTo(m[it.id])
                 val velocity = (distance / stepInSeconds) * 3600
-                val range = getRange(velocity)
+                val range = getRange(velocity / 1000)
                 ris[range] = (ris[range] ?: 0.0) + 1.0
             }
         }

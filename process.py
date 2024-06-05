@@ -480,6 +480,8 @@ if __name__ == '__main__':
     import seaborn.objects as so
     from seaborn import axes_style
 
+    os.makedirs(output_directory, exist_ok=True)
+
     so.Plot.config.theme.update(axes_style("whitegrid"))
 
     dataset = means['velocity_simulation'].sum(dim='time')
@@ -501,14 +503,45 @@ if __name__ == '__main__':
                  .reset_index()
                  )
     print(dataset_3)
+
+    fig = plt.figure(figsize=(22, 4), layout="tight")
     velocity_plot = (
         so.Plot(dataset_3, color="intrinsicForwardCoefficient", x='velocity_range', y='count')
         .add(so.Line(marker="o", edgecolor="w"), so.Agg())
         .add(so.Band())
+        .on(fig)
         .facet("intrinsicLateralMultiplier")
-        .layout(size=(20, 4), engine="constrained")
+        .label(col="Lateral Multiplier", legend=None)
+        # .layout(size=(22, 4), engine="constrained")
         .scale(color="viridis")
+        .plot()
+    )
+    fig.legends.pop(0)
+
+    for ax in fig.axes:
+        ax.tick_params("x", rotation=90)
+
+    # velocity_plot.show()
+    velocity_plot.save(f"{output_directory}/velocity_simulation.pdf")
+
+    # Real velocity plot -----------------------------------------------------------------------------------------------
+    header = ['time', '0.0-0.75', '0.75-1.5', '1.5-2.25', '2.25-3.0', '3.0-3.75', '3.75-4.5', '4.5-5.25', '5.25-6.0', '6.0-6.75', '6.75-7.5', '7.5-8.25', '8.25-9.0', '9.0-9.75', '9.75-10.5', '10.5-11.25', '11.25-12.0', '12.0-12.75', '12.75-13.5', '13.5-14.25', '14.25-15.0']
+    real_dataset = pd.read_csv("data/velocity_reconstruction.csv", delimiter=' ', comment='#', names=header)
+    real_dataset = real_dataset.melt(id_vars=['time'], var_name='velocity_range', value_name='count')
+    print(real_dataset)
+
+    fig = plt.figure(figsize=(22/3, 4), layout="constrained")
+    real_velocity_plot = (
+        so.Plot(real_dataset, x='velocity_range', y='count')
+        .add(so.Line(marker="o", edgecolor="w"), so.Agg('sum'))
+        .on(fig)
+        .scale(color="viridis")
+        .plot()
     )
 
-    velocity_plot.show()
+    for ax in fig.axes:
+        ax.tick_params("x", rotation=90)
+
+    real_velocity_plot.save(f"{output_directory}/velocity_reconstruction.pdf")
+
     plt.show()

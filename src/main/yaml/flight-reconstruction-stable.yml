@@ -76,7 +76,7 @@ export:
     parameters:
       fileNameRoot: "velocity_reconstruction"
       interval: 300.0 # equivalent to 10 seconds
-      exportPath: "build/exportt"
+      exportPath: "data"
     data:
       - time
       - type: VelocityExtractorOSME

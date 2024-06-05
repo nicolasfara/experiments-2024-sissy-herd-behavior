@@ -15,7 +15,7 @@ data class NodeSnapshotEuclidean(
 /**
  * @param stepInSeconds the step in seconds between two extraction.
  */
-class VelocityExtractorEuclidean(private val stepInSeconds: Int) : AbstractVelocityExtractor() {
+class VelocityExtractorEuclidean(private val stepInSeconds: Int) : AbstractRangeExtractor(maxValue = 15.0) {
     var prev: List<NodeSnapshotEuclidean> = emptyList()
 
     override fun <T> extractData(
@@ -34,7 +34,7 @@ class VelocityExtractorEuclidean(private val stepInSeconds: Int) : AbstractVeloc
             if (m.containsKey(it.id)) {
                 val distance: Double = it.position.distanceTo(m[it.id]!!)
                 val velocity = (distance / stepInSeconds) * 3600
-                val range = getRange(velocity)
+                val range = getRange(velocity / 1000)
                 ris[range] = (ris[range] ?: 0.0) + 1.0
             }
         }

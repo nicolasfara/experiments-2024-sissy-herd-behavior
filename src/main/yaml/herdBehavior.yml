@@ -3,7 +3,7 @@ incarnation: protelis
 variables:
   seed: &seed
     min: 0
-    max: 10
+    max: 3
     step: 1
     default: 0
   bodyLength: &bodyLen
@@ -26,10 +26,10 @@ variables:
     formula: EnvironmentSize / 2
   NumberOfHerds: &HerdNumber
     type: ArbitraryVariable
-    parameters: [ 1, [1, 2] ]
+    parameters: [ 2, [1, 2] ]
   intrinsicForwardCoefficient:
     type: GeometricVariable
-    parameters: [ 1.0, 0.1, 1.0, 5 ]
+    parameters: [ 1.0, 0.1, 1.0, 50 ]
   intrinsicLateralMultiplier:
     type: ArbitraryVariable
     parameters: [ 0.5, [0.25, 0.5, 0.75] ]

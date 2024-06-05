@@ -64,6 +64,9 @@ class HerdBehavior @JvmOverloads constructor(
     private val herdRandomizer: Random
     private val nodeRandomizer: Random
 
+    private val maxElements = 10
+    private val previousAngles = ArrayDeque<Double>()
+
     companion object {
         /**
          * How many times stress zone length is bigger than width.
@@ -167,6 +170,9 @@ class HerdBehavior @JvmOverloads constructor(
     override fun execute() {
         alignDirection()
         environment.moveNode(node, getNextPosition())
+        val velocity = environment.getHeading(node)
+        node.setConcentration(SimpleMolecule("velocity"), listOf(velocity.x, velocity.y))
+        node.setConcentration(SimpleMolecule("hue"), node.id)
     }
 
     override fun getContext(): Context = Context.LOCAL
