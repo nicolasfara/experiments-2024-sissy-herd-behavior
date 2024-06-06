@@ -507,7 +507,7 @@ if __name__ == '__main__':
     fig = plt.figure(figsize=(22, 4), layout="tight")
     velocity_plot = (
         so.Plot(dataset_3, color="intrinsicForwardCoefficient", x='velocity_range', y='count')
-        .add(so.Line(marker="o", edgecolor="w"), so.Agg())
+        .add(so.Line(edgecolor="w"), so.Agg())
         .add(so.Band())
         .on(fig)
         .facet("intrinsicLateralMultiplier")
@@ -533,7 +533,7 @@ if __name__ == '__main__':
     fig = plt.figure(figsize=(22/3, 4), layout="constrained")
     real_velocity_plot = (
         so.Plot(real_dataset, x='velocity_range', y='count')
-        .add(so.Line(marker="o", edgecolor="w"), so.Agg('sum'))
+        .add(so.Line(edgecolor="w"), so.Agg('sum'))
         .on(fig)
         .scale(color="viridis")
         .plot()
