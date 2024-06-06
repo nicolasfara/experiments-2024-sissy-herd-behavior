@@ -126,6 +126,6 @@ export:
       exportPath: "data"
     data:
       - time
-      - molecule: speed
+      - type: SpeedExtractor
 #      - type: VelocityExtractorEuclidean
 #        parameters: [10]

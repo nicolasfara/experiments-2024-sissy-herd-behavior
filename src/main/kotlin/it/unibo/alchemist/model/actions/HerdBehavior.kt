@@ -187,7 +187,7 @@ class HerdBehavior @JvmOverloads constructor(
         val speed = distance / deltaTime
         lastTime = environment.simulation.time.toDouble()
         previousPosition = currentPosition
-        return speed
+        return speed * 3.6 // m/s to km/h
     }
 
     override fun getContext(): Context = Context.LOCAL
