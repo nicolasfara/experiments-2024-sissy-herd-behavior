@@ -15,7 +15,7 @@ class SpeedExtractor : AbstractDoubleExporter() {
         step: Long
     ): Map<String, Double> {
         return environment.nodes.associate {
-            columnNames[it.id] to it.getConcentration(SimpleMolecule("speed")) as Double
+            columnNames[it.id] to (it.getConcentration(SimpleMolecule("speed")) as? Double ?: 0.0)
         }
     }
 }
