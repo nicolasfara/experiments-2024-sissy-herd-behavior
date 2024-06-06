@@ -3,7 +3,7 @@ incarnation: protelis
 variables:
   seed: &seed
     min: 0
-    max: 3
+    max: 1
     step: 1
     default: 0
   bodyLength: &bodyLen
@@ -119,12 +119,13 @@ terminate:
     parameters: [ 1800 ]
 
 export:
-  - type: CustomCSVExporter
+  - type: CSVExporter
     parameters:
       fileNameRoot: "velocity_simulation"
       interval: 10.0
       exportPath: "data"
     data:
       - time
-      - type: VelocityExtractorEuclidean
-        parameters: [10]
+      - molecule: speed
+#      - type: VelocityExtractorEuclidean
+#        parameters: [10]
