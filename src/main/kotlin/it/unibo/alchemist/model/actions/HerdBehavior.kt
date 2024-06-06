@@ -64,8 +64,8 @@ class HerdBehavior @JvmOverloads constructor(
     private val herdRandomizer: Random
     private val nodeRandomizer: Random
 
-    private val maxElements = 10
-    private val previousAngles = ArrayDeque<Double>()
+    private lateinit var previousPosition: Euclidean2DPosition
+    private var lastTime = 0.0
 
     companion object {
         /**
@@ -170,9 +170,24 @@ class HerdBehavior @JvmOverloads constructor(
     override fun execute() {
         alignDirection()
         environment.moveNode(node, getNextPosition())
+        val speed = computeSpeed()
+        node.setConcentration(SimpleMolecule("speed"), speed)
         val velocity = environment.getHeading(node)
         node.setConcentration(SimpleMolecule("velocity"), listOf(velocity.x, velocity.y))
         node.setConcentration(SimpleMolecule("hue"), node.id)
+    }
+
+    private fun computeSpeed(): Double {
+        val currentPosition = environment.getPosition(node)
+        if (!::previousPosition.isInitialized) {
+            previousPosition = currentPosition
+        }
+        val distance = currentPosition.distanceTo(previousPosition)
+        val deltaTime = environment.simulation.time.toDouble() - lastTime
+        val speed = distance / deltaTime
+        lastTime = environment.simulation.time.toDouble()
+        previousPosition = currentPosition
+        return speed
     }
 
     override fun getContext(): Context = Context.LOCAL
