@@ -16,7 +16,7 @@ import org.apache.commons.math3.util.FastMath
  * @param groupNumber number of groups.
  * @param groupRadius radius of the circle where nodes from the same group will be deployed.
  */
-class GroupsDeployment<P : Position<out P>>(
+class GroupsDeployment<P : Position<P>>(
     environment: Environment<*, P>,
     randomGenerator: RandomGenerator,
     nodeCount: Int,
@@ -27,6 +27,7 @@ class GroupsDeployment<P : Position<out P>>(
     private val groupRadius: Double,
 ) : AbstractRandomDeployment<P>(environment, randomGenerator, nodeCount) {
     private val groupRandomValuesMap = mutableMapOf<Int, P>()
+    private val alreadyComputedPositions: MutableSet<P> = mutableSetOf()
 
     override fun indexToPosition(i: Int): P {
         val groupIndex = i % groupNumber
@@ -43,6 +44,18 @@ class GroupsDeployment<P : Position<out P>>(
 
         val angle = randomDouble(0.0, 2 * FastMath.PI)
         val rad: Double = groupRadius * FastMath.sqrt(randomDouble())
-        return makePosition(groupCenter[0] + rad * FastMath.cos(angle), groupCenter[1] + rad * FastMath.sin(angle))
+        var candidatePosition = makePosition(groupCenter[0] + rad * FastMath.cos(angle), groupCenter[1] + rad * FastMath.sin(angle))
+        // Generate a position not colliding with already computed positions
+        while (alreadyComputedPositions.any { isColliding(candidatePosition) }) {
+            val newAngle = randomDouble(0.0, 2 * FastMath.PI)
+            val newRad: Double = groupRadius * FastMath.sqrt(randomDouble())
+            candidatePosition = makePosition(groupCenter[0] + newRad * FastMath.cos(newAngle), groupCenter[1] + newRad * FastMath.sin(newAngle))
+        }
+        alreadyComputedPositions.add(candidatePosition)
+        return candidatePosition
+    }
+
+    private fun isColliding(other: P): Boolean {
+        return alreadyComputedPositions.any { it.distanceTo(other) < 3.0 }
     }
 }
