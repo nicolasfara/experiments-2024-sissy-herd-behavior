@@ -199,7 +199,7 @@ if __name__ == '__main__':
     # Experiment prefixes: one per experiment (root of the file name)
     experiments = ['velocity_simulation']
     floatPrecision = '{: 0.3f}'
-    # Number of time samples
+    # Number of time samples 
     timeSamples = 10
     # time management
     minTime = 0
@@ -207,7 +207,7 @@ if __name__ == '__main__':
     timeColumnName = 'time'
     logarithmicTime = False
     # One or more variables are considered random and "flattened"
-    seedVars = ['seed']
+    seedVars = ['seed'] # ['seed']
 
 
     # Label mapping

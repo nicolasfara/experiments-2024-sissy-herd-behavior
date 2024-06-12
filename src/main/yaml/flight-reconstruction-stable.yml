@@ -79,5 +79,7 @@ export:
       exportPath: "data"
     data:
       - time
-      - type: VelocityExtractorOSME
+      - type: SpeedExtractorOSME
         parameters: [10]
+#      - type: VelocityExtractorOSME
+#        parameters: [10]
