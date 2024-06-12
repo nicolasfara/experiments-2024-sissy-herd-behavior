@@ -1,3 +1,20 @@
+## [1.2.0](https://github.com/nicolasfara/experiments-2024-dsrt-herd-behavior/compare/1.1.0...1.2.0) (2024-06-12)
+
+
+### Features
+
+* add extractor for real data ([940e5f9](https://github.com/nicolasfara/experiments-2024-dsrt-herd-behavior/commit/940e5f90d53efa9ff72d3cfda82fea5cd36e2efc))
+
+
+### Build and continuous integration
+
+* exclude virtual env ([67d2eec](https://github.com/nicolasfara/experiments-2024-dsrt-herd-behavior/commit/67d2eec979a5c458fbccb1636a041552be4de73a))
+
+
+### General maintenance
+
+* **release:** update gradle.properties .env versions to 1.1.0 [skip ci] ([3d7b70c](https://github.com/nicolasfara/experiments-2024-dsrt-herd-behavior/commit/3d7b70c20d992307a7862244d9f9965b2f84f408))
+
 ## [1.1.0](https://github.com/nicolasfara/experiments-2024-dsrt-herd-behavior/compare/1.0.0...1.1.0) (2024-06-04)
 
 
