@@ -207,7 +207,7 @@ if __name__ == '__main__':
     timeColumnName = 'time'
     logarithmicTime = False
     # One or more variables are considered random and "flattened"
-    seedVars = ['seed'] # ['seed']
+    seedVars = ['seed']  # ['seed']
 
 
     # Label mapping
@@ -487,7 +487,7 @@ if __name__ == '__main__':
     sns.color_palette("viridis", as_cmap=True)
     sns.set_theme(style="whitegrid")
     # increase fontsize
-    sns.set_context("paper", font_scale=1.5)
+    sns.set_context("paper", font_scale=2.2)
 
     dataset = means['velocity_simulation'].to_dataframe().reset_index()
     dataset = dataset.melt(id_vars=['time', 'intrinsicForwardCoefficient', 'intrinsicLateralMultiplier', 'NumberOfHerds'],
@@ -500,6 +500,7 @@ if __name__ == '__main__':
     coefficients_to_keep = [coef for i, coef in enumerate(all_coefficients) if i % n == 0]
     # print(coefficients_to_keep)
     dataset = dataset[dataset['intrinsicForwardCoefficient'].isin(coefficients_to_keep)]
+    dataset['velocity'] = dataset['velocity'] / 3.6  # convert to m/s
 
     plt.figure(figsize=(10, 6), layout='tight')
     g = sns.FacetGrid(
@@ -516,17 +517,13 @@ if __name__ == '__main__':
         x='velocity',
         hue='intrinsicForwardCoefficient',
         hue_order=coefficients_to_keep.reverse(),
-        # binrange=(0, 15),
-        # stat="percent",
         linewidth=0.5,
-        # bins=35,
-        # element="poly",
         palette='viridis',
-        bw_adjust=2.5,
+        bw_adjust=4.5,
         clip=(0, 13),
     )
     g.set_titles("LateralVelocityMultiplier={col_name}")
-    g.set_xlabels("Velocity (km/h)")
+    g.set_xlabels("Velocity (m/s)")
     g.savefig(f"{output_directory}/velocity_simulation.pdf")
 
     # Real velocity plot -----------------------------------------------------------------------------------------------
@@ -536,9 +533,10 @@ if __name__ == '__main__':
     # melt the dataset
     plt.figure(figsize=(10, 6), layout='tight')
     real_dataset = real_dataset.melt(id_vars=['time'], var_name='node', value_name='velocity')
-    real_plot = sns.kdeplot(data=real_dataset, x='velocity', palette='viridis', bw_adjust=2, clip=(0, 13))
-    plt.xlim(0, 13)
-    plt.xlabel("Velocity (km/h)")
+    real_dataset['velocity'] = real_dataset['velocity'] / 3.6  # convert to m/s
+    real_plot = sns.kdeplot(data=real_dataset, x='velocity', palette='viridis', bw_adjust=2.5, clip=(0, 13))
+    plt.xlim(0, 6.5)
+    plt.xlabel("Velocity (m/s)")
     plt.title("Velocity Distribution From KABR Dataset")
     real_plot.get_figure().savefig(f"{output_directory}/velocity_reconstruction.pdf")
 
