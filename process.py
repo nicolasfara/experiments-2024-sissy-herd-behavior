@@ -486,6 +486,8 @@ if __name__ == '__main__':
 
     sns.color_palette("viridis", as_cmap=True)
     sns.set_theme(style="whitegrid")
+    # increase fontsize
+    sns.set_context("paper", font_scale=1.5)
 
     dataset = means['velocity_simulation'].to_dataframe().reset_index()
     dataset = dataset.melt(id_vars=['time', 'intrinsicForwardCoefficient', 'intrinsicLateralMultiplier', 'NumberOfHerds'],
@@ -499,12 +501,12 @@ if __name__ == '__main__':
     # print(coefficients_to_keep)
     dataset = dataset[dataset['intrinsicForwardCoefficient'].isin(coefficients_to_keep)]
 
-    plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(10, 6), layout='tight')
     g = sns.FacetGrid(
         dataset,
         col='intrinsicLateralMultiplier',
         aspect=1.7,
-        height=4,
+        height=5,
         col_wrap=3,
         sharex=False,
         sharey=False
@@ -523,67 +525,23 @@ if __name__ == '__main__':
         bw_adjust=2.5,
         clip=(0, 13),
     )
+    g.set_titles("LateralVelocityMultiplier={col_name}")
+    g.set_xlabels("Velocity (km/h)")
     g.savefig(f"{output_directory}/velocity_simulation.pdf")
 
-
-    # dataset = means['velocity_simulation'].sum(dim='time')
-    # dataset["intrinsicForwardCoefficient"] = dataset['intrinsicForwardCoefficient'].astype(str)
-    # dataset = dataset.to_dataframe()
-    # dataset = dataset.reset_index().drop(columns=['NumberOfHerds'])
-    # dataset_1 = dataset.melt(id_vars=['intrinsicForwardCoefficient', 'intrinsicLateralMultiplier', 'seed'],
-    #                          var_name='velocity_range', value_name='count')
-    # dataset_2 = dataset.melt(id_vars=['intrinsicForwardCoefficient', 'intrinsicLateralMultiplier', 'seed'],
-    #                          var_name='multiplier',
-    #                          value_name='multiplier_value')
-    # dataset_1 = dataset_1.set_index(['intrinsicForwardCoefficient', 'intrinsicLateralMultiplier', dataset_1.groupby(
-    #     ['intrinsicForwardCoefficient', 'intrinsicLateralMultiplier']).cumcount()])
-    # dataset_2 = dataset_2.set_index(['intrinsicForwardCoefficient', 'intrinsicLateralMultiplier', dataset_2.groupby(
-    #     ['intrinsicForwardCoefficient', 'intrinsicLateralMultiplier']).cumcount()])
-    # dataset_3 = (pd.concat([dataset_1, dataset_2], axis=1)
-    #              .sort_index(level=2)
-    #              .reset_index(level=2, drop=True)
-    #              .reset_index()
-    #              )
-    # print(dataset_3)
-    #
-    # fig = plt.figure(figsize=(22, 4), layout="tight")
-    # velocity_plot = (
-    #     so.Plot(dataset_3, color="intrinsicForwardCoefficient", x='velocity_range', y='count')
-    #     .add(so.Line(edgecolor="w"), so.Agg())
-    #     .add(so.Band())
-    #     .on(fig)
-    #     .facet("intrinsicLateralMultiplier")
-    #     .label(col="Lateral Multiplier", legend=None)
-    #     # .layout(size=(22, 4), engine="constrained")
-    #     .scale(color="viridis")
-    #     .plot()
-    # )
-    # fig.legends.pop(0)
-    #
-    # for ax in fig.axes:
-    #     ax.tick_params("x", rotation=90)
-    #
-    # # velocity_plot.show()
-    # velocity_plot.save(f"{output_directory}/velocity_simulation.pdf")
-
     # Real velocity plot -----------------------------------------------------------------------------------------------
-    # header = ['time', '0.0-0.75', '0.75-1.5', '1.5-2.25', '2.25-3.0', '3.0-3.75', '3.75-4.5', '4.5-5.25', '5.25-6.0', '6.0-6.75', '6.75-7.5', '7.5-8.25', '8.25-9.0', '9.0-9.75', '9.75-10.5', '10.5-11.25', '11.25-12.0', '12.0-12.75', '12.75-13.5', '13.5-14.25', '14.25-15.0']
-    # real_dataset = pd.read_csv("data/velocity_reconstruction.csv", delimiter=' ', comment='#', names=header)
-    # real_dataset = real_dataset.melt(id_vars=['time'], var_name='velocity_range', value_name='count')
-    # print(real_dataset)
-    #
-    # fig = plt.figure(figsize=(22/3, 4), layout="constrained")
-    # real_velocity_plot = (
-    #     so.Plot(real_dataset, x='velocity_range', y='count')
-    #     .add(so.Line(edgecolor="w"), so.Agg('sum'))
-    #     .on(fig)
-    #     .scale(color="viridis")
-    #     .plot()
-    # )
-    #
-    # for ax in fig.axes:
-    #     ax.tick_params("x", rotation=90)
-    #
-    # real_velocity_plot.save(f"{output_directory}/velocity_reconstruction.pdf")
+    real_dataset = pd.read_csv("data/velocity_reconstruction.csv", delimiter=' ', comment='#', names=list(range(10)))
+    # rename the column 0 into 'time'
+    real_dataset.rename(columns={0: 'time'}, inplace=True)
+    # melt the dataset
+    plt.figure(figsize=(10, 6), layout='tight')
+    real_dataset = real_dataset.melt(id_vars=['time'], var_name='node', value_name='velocity')
+    real_plot = sns.kdeplot(data=real_dataset, x='velocity', palette='viridis', bw_adjust=2, clip=(0, 13))
+    plt.xlim(0, 13)
+    plt.xlabel("Velocity (km/h)")
+    plt.title("Velocity Distribution From KABR Dataset")
+    real_plot.get_figure().savefig(f"{output_directory}/velocity_reconstruction.pdf")
+
+    print(real_dataset)
 
     plt.show()
