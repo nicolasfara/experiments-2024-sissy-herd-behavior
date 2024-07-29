@@ -1,4 +1,4 @@
-# Alchemist Experiments Bootstrap
+# Herd Behaviour -- SISSY
 
 A customized Alchemist Primer with releases and data analysis ready.
 
