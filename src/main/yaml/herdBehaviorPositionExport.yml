@@ -121,12 +121,11 @@ terminate:
 export:
   - type: CSVExporter
     parameters:
-      fileNameRoot: "velocity_simulation"
+      fileNameRoot: "position_export"
       interval: 10.0
       exportPath: "data"
     data:
       - time
-      - type: SpeedExtractor
       - type: PositionExporter
         parameters: [ *NumberOfAnimals ]
 #      - type: VelocityExtractorEuclidean
