@@ -1,3 +1,20 @@
+## [1.5.0](https://github.com/nicolasfara/experiments-2024-sissy-herd-behavior/compare/1.4.0...1.5.0) (2024-08-07)
+
+
+### Features
+
+* add position exporter ([daa9e63](https://github.com/nicolasfara/experiments-2024-sissy-herd-behavior/commit/daa9e63416b2586b2759fb56b6dc4196f2dc6901))
+
+
+### Build and continuous integration
+
+* use new docker compose command ([2f78563](https://github.com/nicolasfara/experiments-2024-sissy-herd-behavior/commit/2f78563a15509b01d60a089b8bdd83028dc3f059))
+
+
+### General maintenance
+
+* **release:** update gradle.properties .env versions to 1.4.0 [skip ci] ([cda577f](https://github.com/nicolasfara/experiments-2024-sissy-herd-behavior/commit/cda577f226a72e6b999e5465516ecb773fb4e02b))
+
 ## [1.4.0](https://github.com/nicolasfara/experiments-2024-dsrt-herd-behavior/compare/1.3.0...1.4.0) (2024-06-12)
 
 
